@@ -35,8 +35,6 @@ import java.util.ArrayList
 
 
 class MainActivity : AppCompatActivity() {
-    private val ACCESS_FINE_LOCATION = 1000     // Request Code
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -59,36 +57,29 @@ class MainActivity : AppCompatActivity() {
         //test Class
         val testGIO1 = TestGIO("test1", "description1",35.8888, 128.6103)
         val testGIO2 = TestGIO("test2", "description2", 35.89302375678098, 128.60956210965904)
+        val testGIO3 = TestGIO("test3", "description3", 35.89201591394873, 128.6112128398153)
 
-        // 마커 추가
-        val marker = MapPOIItem()
+        val testList = ArrayList<TestGIO>()
+        testList.add(testGIO1)
+        testList.add(testGIO2)
+        testList.add(testGIO3)
 
-        marker.apply {
-                itemName = testGIO1.name   // 마커 이름
-                mapPoint = MapPoint.mapPointWithGeoCoord(testGIO1.latitude, testGIO1.longitude)   // 좌표
+        for( i in 0 .. testList.size - 1){
+            val marker = MapPOIItem()
+
+            marker.apply {
+                itemName = testList[i].name   // 마커 이름
+                mapPoint = MapPoint.mapPointWithGeoCoord(testList[i].latitude, testList[i].longitude)   // 좌표
                 markerType = MapPOIItem.MarkerType.BluePin          // 마커 모양 (커스텀)
                 //customImageResourceId = R.drawable.이미지               // 커스텀 마커 이미지
                 selectedMarkerType = MapPOIItem.MarkerType.RedPin  // 클릭 시 마커 모양 (커스텀)
                 //customSelectedImageResourceId = R.drawable.이미지       // 클릭 시 커스텀 마커 이미지
                 isCustomImageAutoscale = false      // 커스텀 마커 이미지 크기 자동 조정
                 setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
-                mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(testGIO1.latitude, testGIO1.longitude), true)
+                mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(testList[i].latitude, testList[i].longitude), true)
             }
-        mapView.addPOIItem(marker)
-
-        val marker2 = MapPOIItem()
-        marker2.apply {
-            itemName = testGIO2.name   // 마커 이름
-            mapPoint = MapPoint.mapPointWithGeoCoord(testGIO2.latitude, testGIO2.longitude)   // 좌표
-            markerType = MapPOIItem.MarkerType.BluePin          // 마커 모양 (커스텀)
-            //customImageResourceId = R.drawable.이미지               // 커스텀 마커 이미지
-            selectedMarkerType = MapPOIItem.MarkerType.RedPin  // 클릭 시 마커 모양 (커스텀)
-            //customSelectedImageResourceId = R.drawable.이미지       // 클릭 시 커스텀 마커 이미지
-            isCustomImageAutoscale = false      // 커스텀 마커 이미지 크기 자동 조정
-            setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
-            mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(testGIO2.latitude, testGIO2.longitude), true)
+            mapView.addPOIItem(marker)
         }
-        mapView.addPOIItem(marker2)
 
         val mapViewContainer = findViewById<View>(R.id.map_view) as ViewGroup
         mapViewContainer.addView(mapView)
@@ -125,8 +116,14 @@ class MainActivity : AppCompatActivity() {
                 Log.e("Hash key", something)
             }
         } catch (e: Exception) {
-
             Log.e("name not found", e.toString())
         }
     }
+}
+
+class TestGIO (name: String, description : String, latitude: Double, longitude : Double) {
+    var name: String = name
+    var description: String = description
+    var latitude: Double = latitude
+    var longitude : Double = longitude
 }
