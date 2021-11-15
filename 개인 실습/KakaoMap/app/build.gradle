@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
 }
+apply plugin: 'kotlin-android'
 
 android {
     compileSdk 31
@@ -29,10 +30,6 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-
-    buildFeatures {
-        viewBinding true
-    }
 }
 
 dependencies {
@@ -53,4 +50,9 @@ dependencies {
 
     //gps
     implementation 'com.google.android.gms:play-services-location:18.0.0'
+    implementation "androidx.core:core-ktx:+"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
+//repositories {
+//    mavenCentral()
+//}
