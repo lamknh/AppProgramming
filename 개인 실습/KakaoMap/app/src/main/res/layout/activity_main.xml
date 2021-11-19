@@ -53,8 +53,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="40dp"
         android:layout_marginBottom="40dp"
-        android:stretchColumns="1"
-        android:shrinkColumns="0"
+        android:stretchColumns="*"
         android:background="@color/black"
         >
         <View
@@ -76,7 +75,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="1dp"
                 android:layout_marginBottom="1dp"
                 android:gravity="center"
                 android:background="@color/white"
@@ -87,7 +85,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="1dp"
                 android:layout_marginRight="1dp"
                 android:layout_marginBottom="1dp"
                 android:gravity="center"
@@ -97,6 +94,11 @@
                 android:textSize="15dp"
                 />
         </TableRow>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/in_num_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
     </TableLayout>
 
 </LinearLayout>

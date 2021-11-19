@@ -1,7 +1,9 @@
 package com.example.kakaomap
 
 import android.Manifest
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -19,6 +21,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import net.daum.mf.map.api.CalloutBalloonAdapter
 import net.daum.mf.map.api.MapPoint
 import net.daum.mf.map.api.MapView
@@ -34,6 +38,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var button : Button
 
     private lateinit var mapView : MapView
+
+    private lateinit var restaurantAdapter: RestaurantAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -159,6 +165,21 @@ class MainActivity : AppCompatActivity() {
 
         val mapViewContainer = findViewById<View>(R.id.map_view) as ViewGroup
         mapViewContainer.addView(mapView)
+
+        restaurantAdapter = RestaurantAdapter()
+
+        restaurantAdapter.setItemClickListener(object: RestaurantAdapter.OnItemClickListener{
+            override fun onClick(v: View, position: Int) {
+                // 클릭 시 이벤트 작성
+                Toast.makeText(this@MainActivity, position.toString() + "Clicked", Toast.LENGTH_SHORT).show()
+            }
+        })
+
+        this.findViewById<RecyclerView>(R.id.in_num_list).apply {
+            layoutManager =
+                LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL,false)
+            adapter = restaurantAdapter
+        }
     }
 
     // 커스텀 말풍선 클래스
