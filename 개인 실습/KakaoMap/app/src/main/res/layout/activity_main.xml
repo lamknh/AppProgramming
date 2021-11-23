@@ -6,11 +6,11 @@
     android:layout_height="match_parent"
     >
 
-    <Button
-        android:id="@+id/button"
-        android:text="GPS"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+<!--    <Button-->
+<!--        android:id="@+id/button"-->
+<!--        android:text="GPS"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"/>-->
 
     <TextView
         android:id="@+id/restTitle"
@@ -69,8 +69,9 @@
                 android:gravity="center"
                 android:padding="5dp"
                 android:background="@color/white"
-                android:text=" no "
-                android:textSize="15sp"
+                android:text="no"
+                android:textSize="16sp"
+                android:backgroundTint="@color/gray"
                 />
             <TextView
                 android:layout_width="wrap_content"
@@ -80,7 +81,8 @@
                 android:background="@color/white"
                 android:padding="5dp"
                 android:text="이름"
-                android:textSize="15dp"
+                android:textSize="16sp"
+                android:backgroundTint="@color/gray"
                 />
             <TextView
                 android:layout_width="wrap_content"
@@ -90,8 +92,9 @@
                 android:gravity="center"
                 android:background="@color/white"
                 android:padding="5dp"
-                android:text="   거리   "
-                android:textSize="15dp"
+                android:text="거리"
+                android:textSize="16sp"
+                android:backgroundTint="@color/gray"
                 />
         </TableRow>
         <androidx.recyclerview.widget.RecyclerView
@@ -100,5 +103,4 @@
             android:layout_height="match_parent"
             />
     </TableLayout>
-
 </LinearLayout>

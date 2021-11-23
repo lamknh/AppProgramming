@@ -15,9 +15,9 @@ class RestaurantAdapter() : RecyclerView.Adapter<RestaurantAdapter.MyViewHolder>
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) { //xml과 data 연결
-        holder.rest_num.text = (position + 1).toString()
+        holder.rest_num.text = "  " + (position + 1).toString()
         holder.rest_name.text = "가게 이름"
-        holder.distance.text = position.toString() + "m"
+        holder.distance.text = position.toString() + "m   "
 
         // (1) 리스트 내 항목 클릭 시 onClick() 호출
         holder.itemView.setOnClickListener {

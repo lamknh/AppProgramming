@@ -1,9 +1,7 @@
 package com.example.kakaomap
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -16,7 +14,6 @@ import android.view.LayoutInflater
 import android.view.View
 
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -27,23 +24,38 @@ import net.daum.mf.map.api.CalloutBalloonAdapter
 import net.daum.mf.map.api.MapPoint
 import net.daum.mf.map.api.MapView
 import net.daum.mf.map.api.MapPOIItem
-import java.io.IOException
+import java.net.HttpURLConnection
+import java.net.URL
+import java.net.URLEncoder
 import java.util.*
+import android.os.StrictMode
+import android.os.StrictMode.ThreadPolicy
+import com.example.kakaomap.DAO.Address
+import com.google.gson.Gson
 
 
 class MainActivity : AppCompatActivity() {
     private var getLongitude : Double = 0.0
     private var getLatitude : Double = 0.0
 
-    private lateinit var button : Button
+    //private lateinit var button : Button
 
     private lateinit var mapView : MapView
 
     private lateinit var restaurantAdapter: RestaurantAdapter
 
+    private val GEOCODE_URL : String ="http://dapi.kakao.com/v2/local/search/address.json?query="
+    private val GEOCODE_USER_INFO : String ="6869c9d359249f596849fc99c5ff98f5"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        if (Build.VERSION.SDK_INT > 9) {
+            val policy = ThreadPolicy.Builder().permitAll().build()
+            StrictMode.setThreadPolicy(policy)
+        }
+
+        getGeoCode()
 
         mapView = MapView(this)
 
@@ -81,48 +93,48 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        button = findViewById(R.id.button)
+        //button = findViewById(R.id.button)
 
-        button?.setOnClickListener{
-            val lm = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-            val isGPSEnabled: Boolean = lm.isProviderEnabled(LocationManager.GPS_PROVIDER)
-            val isNetworkEnabled : Boolean = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
-            //권한 확인
-            if(Build.VERSION.SDK_INT >= 23 &&
-                ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 0)
-            } else {
-                when { //provider 제공자 활성화 여부 체크
-                    isNetworkEnabled -> {
-//                        val location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER) // 인터넷 기반 위치 찾기
+//        button?.setOnClickListener{
+//            val lm = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+//            val isGPSEnabled: Boolean = lm.isProviderEnabled(LocationManager.GPS_PROVIDER)
+//            val isNetworkEnabled : Boolean = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+//            //권한 확인
+//            if(Build.VERSION.SDK_INT >= 23 &&
+//                ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+//                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 0)
+//            } else {
+//                when { //provider 제공자 활성화 여부 체크
+//                    isNetworkEnabled -> {
+////                        val location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER) // 인터넷 기반 위치 찾기
+////                        getLongitude = location?.longitude!!
+////                        getLatitude = location?.latitude!!
+//                        getLongitude = 128.6103
+//                        getLatitude = 35.8888
+//                        mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(getLatitude, getLongitude), true)
+//                        Toast.makeText(this, "현재 위치를 불러옵니다", Toast.LENGTH_SHORT).show()
+//                    }
+//                    isGPSEnabled -> {
+//                        val location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER) // 인터넷 기반 위치 찾기
 //                        getLongitude = location?.longitude!!
 //                        getLatitude = location?.latitude!!
-                        getLongitude = 128.6103
-                        getLatitude = 35.8888
-                        mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(getLatitude, getLongitude), true)
-                        Toast.makeText(this, "현재 위치를 불러옵니다", Toast.LENGTH_SHORT).show()
-                    }
-                    isGPSEnabled -> {
-                        val location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER) // 인터넷 기반 위치 찾기
-                        getLongitude = location?.longitude!!
-                        getLatitude = location?.latitude!!
-                        mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(getLatitude, getLongitude), true)
-                        Toast.makeText(this, "현재 위치를 불러옵니다", Toast.LENGTH_SHORT).show()
-                    }
-                }
+//                        mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(getLatitude, getLongitude), true)
+//                        Toast.makeText(this, "현재 위치를 불러옵니다", Toast.LENGTH_SHORT).show()
+//                    }
+//                }
                 //주기적 업데이트
 //            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1F, gpsLocationListener)
 //            lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 1F, gpsLocationListener)
 //            lm.removeUpdates(gpsLocationListener) //해제부분
-            }
+//            }
 
-            val gpsLocationListener = LocationListener { location ->
-                val provider : String = location.provider
-                val longitude : Double = location.longitude
-                val latitude : Double = location.latitude
-                val altitude : Double = location.altitude
-            }
-        }
+//            val gpsLocationListener = LocationListener { location ->
+//                val provider : String = location.provider
+//                val longitude : Double = location.longitude
+//                val latitude : Double = location.latitude
+//                val altitude : Double = location.altitude
+//            }
+//        }
 
         mapView.setCalloutBalloonAdapter(CustomBalloonAdapter(layoutInflater))  // 커스텀 말풍선 등록
 
@@ -171,7 +183,7 @@ class MainActivity : AppCompatActivity() {
         restaurantAdapter.setItemClickListener(object: RestaurantAdapter.OnItemClickListener{
             override fun onClick(v: View, position: Int) {
                 // 클릭 시 이벤트 작성
-                Toast.makeText(this@MainActivity, position.toString() + "Clicked", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@MainActivity, position.toString() + " Clicked", Toast.LENGTH_SHORT).show()
             }
         })
 
@@ -198,6 +210,36 @@ class MainActivity : AppCompatActivity() {
         override fun getPressedCalloutBalloon(poiItem: MapPOIItem?): View {
             // 말풍선 클릭 시
             return mCalloutBalloon
+        }
+    }
+
+    private fun getGeoCode() {
+        System.out.println("getting GeoCode")
+        val obj : URL
+        try{
+            val address : String = URLEncoder.encode("대구광역시 중구 동성로2가 동성로2길 81", "UTF-8")
+
+            obj = URL(GEOCODE_URL+address)
+
+            val con : HttpURLConnection = obj.openConnection() as HttpURLConnection
+
+            con.setRequestMethod("GET")
+            con.setRequestProperty("Authorization", "KakaoAK " + GEOCODE_USER_INFO)
+            con.setRequestProperty("content-type", "application/json")
+            con.setDoOutput(true)
+            con.setUseCaches(false)
+            con.setDefaultUseCaches(false)
+
+            val data = con.inputStream.bufferedReader().readText()
+            val dataList = "[$data]"
+            val xy = Gson().fromJson(dataList, Array<Address>::class.java).toList()
+            for(i in 0..xy.size-1){
+                System.out.println("x: ${xy[i].documents[i].address.x}, y: ${xy[i].documents[i].address.y}")
+            }
+
+            //System.out.println(data)
+        } catch (e : Exception) {
+            e.printStackTrace()
         }
     }
 
