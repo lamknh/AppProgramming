@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
             StrictMode.setThreadPolicy(policy)
         }
 
-        getGeoCode()
+        getGeoCode("대구광역시 중구 동성로2가 동성로2길 81")
 
         mapView = MapView(this)
 
@@ -213,11 +213,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun getGeoCode() {
+    private fun getGeoCode(address : String) {
         System.out.println("getting GeoCode")
         val obj : URL
         try{
-            val address : String = URLEncoder.encode("대구광역시 중구 동성로2가 동성로2길 81", "UTF-8")
+            val address : String = URLEncoder.encode(address, "UTF-8")
 
             obj = URL(GEOCODE_URL+address)
 
@@ -234,7 +234,11 @@ class MainActivity : AppCompatActivity() {
             val dataList = "[$data]"
             val xy = Gson().fromJson(dataList, Array<Address>::class.java).toList()
             for(i in 0..xy.size-1){
-                System.out.println("x: ${xy[i].documents[i].address.x}, y: ${xy[i].documents[i].address.y}")
+                //System.out.println("x: ${xy[i].documents[i].address.x}, y: ${xy[i].documents[i].address.y}")
+                val x = xy[0].documents[0].address.x
+                val y = xy[0].documents[0].address.y
+
+                System.out.println("$x, $y");
             }
 
             //System.out.println(data)
